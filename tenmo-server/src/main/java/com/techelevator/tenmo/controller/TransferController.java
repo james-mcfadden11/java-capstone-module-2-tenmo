@@ -4,7 +4,6 @@ import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class TransferController {
 
@@ -14,7 +13,7 @@ public class TransferController {
         this.transferDao = new JdbcTransferDao();
     }
 
-    // methods here to receive requests from client using transferDao
+    // methods below to receive requests from client using transferDao, rest annotation
 
 
 
