@@ -68,23 +68,23 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		
+		//call the method from account service. so build in account service
 		
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		//transfer service
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+		//transfer service
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+		//transfer service
 	}
 
 	private void requestBucks() {
