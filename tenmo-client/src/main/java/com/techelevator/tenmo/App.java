@@ -2,13 +2,14 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
 
 public class App {
 
-private static final String API_BASE_URL = "http://localhost:8080/";
+	private static final String API_BASE_URL = "http://localhost:8080/";
     
     private static final String MENU_OPTION_EXIT = "Exit";
     private static final String LOGIN_MENU_OPTION_REGISTER = "Register";
@@ -67,29 +68,44 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
+	// the below methods will call to TransferService and AccountService
+	// and print relevant results to console using ConsoleService
+
 	private void viewCurrentBalance() {
-		//call the method from account service. so build in account service
-		
+		// TODO Auto-generated method stub
+    	// call the method from account service. so build in account service
+		// required
+
+		// allows authentication token to be used in method calls
+		AccountService accountService = new AccountService(currentUser.getToken());
+		System.out.println("User " + currentUser.getUser().getUsername() +
+				" has a balance of " +
+				 + accountService.viewCurrentBalance(currentUser.getUser().getId()));
 	}
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		//transfer service
+		// transfer service
+		// required
+
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		//transfer service
+		// transfer service
+		// optional
 	}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		//transfer service
+		// transfer service
+		// required
+
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
+		// optional
 	}
 	
 	private void exitProgram() {

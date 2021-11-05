@@ -1,9 +1,5 @@
 package com.techelevator.tenmo.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class Transfer {

@@ -41,9 +41,9 @@ public class AccountController {
 
     // TO-DO: need to restrict access to see account balance to authorized user only
     // TO-DO: this method needs to throw a new exception - AccountNotFoundException
-    @RequestMapping(path = "/accounts/{accountID}/balance", method = RequestMethod.GET)
-    public Double getBalance(@PathVariable long accountID) {
-        return accountDao.getBalance(accountID);
+    @RequestMapping(path = "/accounts/{userID}/balance", method = RequestMethod.GET)
+    public Double getBalance(@PathVariable long userID) {
+        return accountDao.getBalance(userID);
     }
 
     // TO-DO: need to restrict access to see account balance to authorized user only

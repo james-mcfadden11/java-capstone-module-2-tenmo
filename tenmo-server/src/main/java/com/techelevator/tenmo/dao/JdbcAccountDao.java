@@ -54,10 +54,10 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public Double getBalance(long accountID) {
+    public Double getBalance(long userID) {
         Double balance = null;
-        String sql = "SELECT balance FROM accounts WHERE account_id = ?";
-        return jdbcTemplate.queryForObject(sql, Double.class, accountID);
+        String sql = "SELECT balance FROM accounts WHERE user_id = ?";
+        return jdbcTemplate.queryForObject(sql, Double.class, userID);
     }
 
     // gets all transfers to or from an account
