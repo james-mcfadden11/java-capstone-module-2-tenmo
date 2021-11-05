@@ -41,10 +41,11 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public Account getOneAccount(long accountID) {
+    public Account getOneAccount(long userID) {
         Account account = null;
-        String sql = "SELECT account_id, username FROM accounts JOIN users USING(user_id) WHERE account_id = ?";
-        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountID);
+        String sql = "SELECT account_id, username, balance, user_id " +
+                "FROM users JOIN accounts USING(user_id) WHERE user_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userID);
 
         if (result.next()) {
             account = mapRowToAccount(result);
@@ -62,11 +63,25 @@ public class JdbcAccountDao implements AccountDao {
 
     // gets all transfers to or from an account
     @Override
-    public List<Transfer> getListOfTransfers(long accountID) {
+    public List<Transfer> getListOfTransfers(long userID) {
         List<Transfer> listOfTransfers = new ArrayList<>();
+
+        // transfers from the user
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfers WHERE account_from = ? OR account_to = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountID, accountID);
+                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_from" +
+                " WHERE user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userID);
+
+        while (results.next()) {
+            Transfer transfer = mapRowToTransfer(results);
+            listOfTransfers.add(transfer);
+        }
+
+        // transfers to the user
+        sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_to" +
+                " WHERE user_id = ?";
+        results = jdbcTemplate.queryForRowSet(sql, userID);
 
         while (results.next()) {
             Transfer transfer = mapRowToTransfer(results);
@@ -76,12 +91,21 @@ public class JdbcAccountDao implements AccountDao {
         return listOfTransfers;
     }
 
+    public long getAccountIDFromUserID(long userID) {
+        String sql = "";
+        Long accountID = jdbcTemplate.queryForObject(sql, Long.class, userID);
+        if (accountID == null) {
+            return -1;
+        }
+        return accountID;
+    }
+
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountID(rs.getLong("account_id"));
-//        account.setBalance(rs.getDouble("balance"));
+        account.setBalance(rs.getDouble("balance"));
         account.setUsername(rs.getString("username"));
-//        account.setUserID(rs.getLong("user_id"));
+        account.setUserID(rs.getLong("user_id"));
         return account;
     }
 

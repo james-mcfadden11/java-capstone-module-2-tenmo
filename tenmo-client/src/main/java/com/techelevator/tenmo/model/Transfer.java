@@ -81,5 +81,9 @@ public class Transfer {
         this.transferStatus = transferStatus;
     }
 
+    @Override
+    public String toString() {
+        return "Transfer of " + this.amount + " from account " + this.fromAccountID + " to account " + this.toAccountID + ".";
+    }
 }
 

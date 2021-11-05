@@ -87,7 +87,10 @@ public class App {
 		// TODO Auto-generated method stub
 		// transfer service
 		// required
-
+		// allows authentication token to be used in method calls
+		AccountService accountService = new AccountService(currentUser.getToken());
+		System.out.println(currentUser.getUser().getUsername() + " has a transfer history of:");
+		console.printTransfers(accountService.viewTransferHistory(currentUser.getUser().getId()));
 	}
 
 	private void viewPendingRequests() {

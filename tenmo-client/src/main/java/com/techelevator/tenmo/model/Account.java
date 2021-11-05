@@ -25,6 +25,11 @@ public class Account {
         this.username = username;
     }
 
+    // for getBalance() method
+    public Account(double balance) {
+        this.balance = balance;
+    }
+
 
     // getters and setters for all fields
 

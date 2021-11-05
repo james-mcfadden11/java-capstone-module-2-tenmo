@@ -34,9 +34,9 @@ public class AccountController {
 
     // TO-DO: need to restrict access to see account balance to authorized user only
     // TO-DO: this method needs to throw a new exception - AccountNotFoundException
-    @RequestMapping(path = "/accounts/{accountID}", method = RequestMethod.GET)
-    public Account getOneAccount(@PathVariable long accountID) {
-        return accountDao.getOneAccount(accountID);
+    @RequestMapping(path = "/accounts/{userID}", method = RequestMethod.GET)
+    public Account getOneAccount(@PathVariable long userID) {
+        return accountDao.getOneAccount(userID);
     }
 
     // TO-DO: need to restrict access to see account balance to authorized user only
@@ -48,9 +48,15 @@ public class AccountController {
 
     // TO-DO: need to restrict access to see account balance to authorized user only
     // TO-DO: this method needs to throw a new exception - AccountNotFoundException
-    @RequestMapping(path = "/accounts/{accountID}/transfers", method = RequestMethod.GET)
-    public List<Transfer> getListOfTransfers(@PathVariable long accountID) {
-        return accountDao.getListOfTransfers(accountID);
+    @RequestMapping(path = "/accounts/{userID}/transfers", method = RequestMethod.GET)
+    public List<Transfer> getListOfTransfers(@PathVariable long userID) {
+        return accountDao.getListOfTransfers(userID);
+    }
+
+    // this is probably a hack way of doing this...
+    @RequestMapping(path = "/accounts/getAccountID/{userID}", method = RequestMethod.GET)
+    public long getAccountIDFromUserID(@PathVariable long userID) {
+        return accountDao.getAccountIDFromUserID(userID);
     }
 
 }
