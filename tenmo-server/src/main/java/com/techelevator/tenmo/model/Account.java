@@ -6,8 +6,9 @@ public class Account {
 
     // eventually need to add validations using @Valid
 
-    private BigDecimal balance;
+    private double balance;
     private long accountID;
+    private String username;
 
     // foreign key to userID - one user can have more than one account
     // User class and corresponding DAO primarily deal with username/password/authentication
@@ -17,10 +18,11 @@ public class Account {
     public Account() {
     }
 
-    public Account(long accountID, long userID, BigDecimal balance) {
+    public Account(long accountID, long userID, double balance, String username) {
         this.accountID = accountID;
         this.userID = userID;
         this.balance = balance;
+        this.username = username;
     }
 
 
@@ -42,11 +44,20 @@ public class Account {
         this.userID = userID;
     }
 
-    public BigDecimal getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }

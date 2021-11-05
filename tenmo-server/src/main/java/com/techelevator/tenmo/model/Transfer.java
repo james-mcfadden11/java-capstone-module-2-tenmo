@@ -1,15 +1,19 @@
 package com.techelevator.tenmo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class Transfer {
 
     // eventually need to add validations using @Valid
 
-    private Account fromAccount;
-    private Account toAccount;
+    private long fromAccountID;
+    private long toAccountID;
     private long transferID;
-    private BigDecimal amount;
+    private double amount;
 
     // transferType: 1 = request, 2 = send
     private int transferType;
@@ -21,9 +25,9 @@ public class Transfer {
     public Transfer() {
     }
 
-    public Transfer(Account fromAccount, Account toAccount, long transferID, int transferType, int transferStatus, BigDecimal amount) {
-        this.fromAccount = fromAccount;
-        this.toAccount = toAccount;
+    public Transfer(long fromAccountID, long toAccountID, long transferID, int transferType, int transferStatus, double amount) {
+        this.fromAccountID = fromAccountID;
+        this.toAccountID = toAccountID;
         this.transferID = transferID;
         this.transferType = transferType;
         this.transferStatus = transferStatus;
@@ -33,21 +37,20 @@ public class Transfer {
 
     // getters and setters
 
-
-    public Account getFromAccount() {
-        return fromAccount;
+    public long getFromAccountID() {
+        return fromAccountID;
     }
 
-    public void setFromAccount(Account fromAccount) {
-        this.fromAccount = fromAccount;
+    public void setFromAccountID(long fromAccountID) {
+        this.fromAccountID = fromAccountID;
     }
 
-    public Account getToAccount() {
-        return toAccount;
+    public long getToAccountID() {
+        return toAccountID;
     }
 
-    public void setToAccount(Account toAccount) {
-        this.toAccount = toAccount;
+    public void setToAccountID(long toAccountID) {
+        this.toAccountID = toAccountID;
     }
 
     public long getTransferID() {
@@ -56,6 +59,14 @@ public class Transfer {
 
     public void setTransferID(long transferID) {
         this.transferID = transferID;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public int getTransferType() {
@@ -73,14 +84,5 @@ public class Transfer {
     public void setTransferStatus(int transferStatus) {
         this.transferStatus = transferStatus;
     }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
 
 }
