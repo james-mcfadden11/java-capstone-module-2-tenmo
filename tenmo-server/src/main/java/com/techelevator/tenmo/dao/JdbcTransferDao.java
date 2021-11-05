@@ -42,7 +42,7 @@ public class JdbcTransferDao implements TransferDao {
 
     // TO-DO: add exception for insufficient funds
     // break this up into private helper methods?
-    // account balances are not updating properly - something wrong with jdbcTemplate.update()
+    // all the commented out lines of code are for using BigDecimal class instead of double... for later
     @Override
     public Transfer sendTransfer(Transfer transfer) {
         // first, check if sender has enough $ in account to transfer
@@ -68,8 +68,8 @@ public class JdbcTransferDao implements TransferDao {
         // update sender balance
         senderBalance -= transfer.getAmount();
         sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
-        long toAccountID = transfer.getToAccountID();
-        jdbcTemplate.update(sql, senderBalance, toAccountID);
+        long fromAccountID = transfer.getFromAccountID();
+        jdbcTemplate.update(sql, senderBalance, fromAccountID);
 
 //        BigDecimal senderNewBalance = fromAccountBalance.subtract(transfer.getAmount());
 //        jdbcTemplate.update(sql, senderNewBalance, transfer.getFromAccountID());
@@ -79,8 +79,8 @@ public class JdbcTransferDao implements TransferDao {
         Double receiverBalance = jdbcTemplate.queryForObject(sql, Double.class, transfer.getToAccountID());
         receiverBalance += transfer.getAmount();
         sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
-        long fromAccountID = transfer.getFromAccountID();
-        jdbcTemplate.update(sql, receiverBalance, fromAccountID);
+        long toAccountID = transfer.getToAccountID();
+        jdbcTemplate.update(sql, receiverBalance, toAccountID);
 
 //        sql = "SELECT balance FROM accounts WHERE account_id = ?";
 //        BigDecimal toAccountBalance = new BigDecimal(jdbcTemplate.queryForObject(sql, Integer.class, transfer.getToAccountID()));

@@ -3,11 +3,13 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
 
@@ -18,7 +20,7 @@ public class TransferController {
     }
 
     // methods below to receive requests from client using transferDao, REST annotation
-
+    // restrict access to sender or receiver only?
     @RequestMapping(path = "/transfers/{transferID}", method = RequestMethod.GET)
     public Transfer getOneTransfer(@PathVariable long transferID) {
         return transferDao.getOneTransfer(transferID);

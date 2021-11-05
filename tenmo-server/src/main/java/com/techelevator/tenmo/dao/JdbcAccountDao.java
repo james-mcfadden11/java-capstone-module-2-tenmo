@@ -29,7 +29,7 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public List<Account> getListOfAccounts() {
         List<Account> accounts = new ArrayList<>();
-        String sql = "SELECT account_id, user_id, balance, username FROM accounts JOIN users USING(user_id)";
+        String sql = "SELECT account_id, username FROM accounts JOIN users USING(user_id)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
 
         while (results.next()) {
@@ -43,7 +43,7 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public Account getOneAccount(long accountID) {
         Account account = null;
-        String sql = "SELECT account_id, user_id, balance, username FROM accounts JOIN users USING(user_id) WHERE account_id = ?";
+        String sql = "SELECT account_id, username FROM accounts JOIN users USING(user_id) WHERE account_id = ?";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountID);
 
         if (result.next()) {
@@ -54,10 +54,10 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public BigDecimal getBalance(long accountID) {
-        BigDecimal balance = null;
+    public Double getBalance(long accountID) {
+        Double balance = null;
         String sql = "SELECT balance FROM accounts WHERE account_id = ?";
-        return jdbcTemplate.queryForObject(sql, BigDecimal.class, accountID);
+        return jdbcTemplate.queryForObject(sql, Double.class, accountID);
     }
 
     // gets all transfers to or from an account
@@ -79,9 +79,9 @@ public class JdbcAccountDao implements AccountDao {
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountID(rs.getLong("account_id"));
-        account.setBalance(rs.getBigDecimal("balance"));
+//        account.setBalance(rs.getDouble("balance"));
         account.setUsername(rs.getString("username"));
-        account.setUserID(rs.getLong("user_id"));
+//        account.setUserID(rs.getLong("user_id"));
         return account;
     }
 

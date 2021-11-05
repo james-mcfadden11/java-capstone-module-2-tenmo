@@ -6,7 +6,7 @@ public class Account {
 
     // eventually need to add validations using @Valid
 
-    private BigDecimal balance;
+    private double balance;
     private long accountID;
     private String username;
 
@@ -18,7 +18,7 @@ public class Account {
     public Account() {
     }
 
-    public Account(long accountID, long userID, BigDecimal balance, String username) {
+    public Account(long accountID, long userID, double balance, String username) {
         this.accountID = accountID;
         this.userID = userID;
         this.balance = balance;
@@ -44,11 +44,11 @@ public class Account {
         this.userID = userID;
     }
 
-    public BigDecimal getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
