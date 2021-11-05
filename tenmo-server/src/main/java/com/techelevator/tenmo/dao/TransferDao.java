@@ -5,11 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public interface TransferDao {
 
-    // get all transfers for one specific user
-    List<Transfer> getListOfTransfers();
+    // need a method to return all transfers in ledger (similar to actual venmo) ??
 
     Transfer getOneTransfer(long transferID);
 

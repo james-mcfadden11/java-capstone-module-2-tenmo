@@ -1,10 +1,17 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcTransferDao implements TransferDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -17,20 +24,91 @@ public class JdbcTransferDao implements TransferDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    // need to fill out the below methods to access database using jdbcTemplate
+    // below methods to access the database using jdbcTemplate
 
-    @Override
-    public List<Transfer> getListOfTransfers() {
-        return null;
-    }
-
-    @Override
+   @Override
     public Transfer getOneTransfer(long transferID) {
-        return null;
+        Transfer transfer = null;
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+                "FROM transfers WHERE transfer_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, transferID);
+
+        if (result.next()) {
+            transfer = mapRowToTransfer(result);
+        }
+
+        return transfer;
     }
 
+    // TO-DO: add exception for insufficient funds
+    // break this up into private helper methods?
+    // account balances are not updating properly - something wrong with jdbcTemplate.update()
     @Override
     public Transfer sendTransfer(Transfer transfer) {
-        return null;
+        // first, check if sender has enough $ in account to transfer
+        String sql;
+        sql = "SELECT balance FROM accounts WHERE account_id = ?";
+        Double senderBalance = jdbcTemplate.queryForObject(sql, Double.class, transfer.getFromAccountID());
+
+//        BigDecimal fromAccountBalance = new BigDecimal(jdbcTemplate.queryForObject(sql, Integer.class, transfer.getFromAccountID()));
+//        BigDecimal transferAmount = transfer.getAmount();
+
+        if (senderBalance == null || senderBalance < transfer.getAmount()) {
+            // insufficient funds in fromAccount to cover transfer
+            // throws InsufficientFundsException...?
+            return null;
+        }
+
+//        if (fromAccountBalance.compareTo(transfer.getAmount()) == -1) {
+            // insufficient funds in fromAccount to cover transfer
+            // throws InsufficientFundsException...?
+//            return null;
+//        }
+
+        // update sender balance
+        senderBalance -= transfer.getAmount();
+        sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
+        long toAccountID = transfer.getToAccountID();
+        jdbcTemplate.update(sql, senderBalance, toAccountID);
+
+//        BigDecimal senderNewBalance = fromAccountBalance.subtract(transfer.getAmount());
+//        jdbcTemplate.update(sql, senderNewBalance, transfer.getFromAccountID());
+
+        // update receiver balance
+        sql = "SELECT balance from accounts where account_id = ?";
+        Double receiverBalance = jdbcTemplate.queryForObject(sql, Double.class, transfer.getToAccountID());
+        receiverBalance += transfer.getAmount();
+        sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
+        long fromAccountID = transfer.getFromAccountID();
+        jdbcTemplate.update(sql, receiverBalance, fromAccountID);
+
+//        sql = "SELECT balance FROM accounts WHERE account_id = ?";
+//        BigDecimal toAccountBalance = new BigDecimal(jdbcTemplate.queryForObject(sql, Integer.class, transfer.getToAccountID()));
+//        BigDecimal receiverNewBalance = toAccountBalance.add(transfer.getAmount());
+
+        // add transfer to transfers table (similar to a ledger)
+        sql = "INSERT INTO transfers " +
+                "(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
+        Long newTransferId = jdbcTemplate.queryForObject(sql, Long.class, transfer.getTransferType(), transfer.getTransferStatus(),
+                transfer.getFromAccountID(), transfer.getToAccountID(), transfer.getAmount());
+        if (newTransferId == null) {
+            return null;
+        }
+        return getOneTransfer(newTransferId);
+    }
+
+
+    private Transfer mapRowToTransfer(SqlRowSet rowSet) {
+        Transfer transfer = new Transfer();
+
+        transfer.setFromAccountID(rowSet.getLong("account_from"));
+        transfer.setToAccountID(rowSet.getLong("account_to"));
+        transfer.setAmount(rowSet.getDouble("amount"));
+        transfer.setTransferID(rowSet.getLong("transfer_id"));
+        transfer.setTransferStatus(rowSet.getInt("transfer_status_id"));
+        transfer.setTransferType(rowSet.getInt("transfer_type_id"));
+
+        return transfer;
     }
 }
