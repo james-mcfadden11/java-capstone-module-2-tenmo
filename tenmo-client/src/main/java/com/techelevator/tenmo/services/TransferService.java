@@ -13,5 +13,7 @@ public class TransferService {
         this.restTemplate = restTemplate;
     }
 
-    
+//    public send sendBucks(){
+//        return restTemplate.getForObject(API_BASE_URL + "/0808" + API_KEY, .class);
+  //  }
 }
