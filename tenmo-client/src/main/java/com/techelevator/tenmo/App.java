@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -78,9 +79,10 @@ public class App {
 
 		// allows authentication token to be used in method calls
 		AccountService accountService = new AccountService(currentUser.getToken());
-		System.out.println("User " + currentUser.getUser().getUsername() +
-				" has a balance of " +
-				 + accountService.viewCurrentBalance(currentUser.getUser().getId()));
+		System.out.println("You (" + currentUser.getUser().getUsername() +
+				") have a balance of " +
+				 + accountService.viewCurrentBalance(currentUser.getUser().getId()) +
+				" TE bucks.");
 	}
 
 	private void viewTransferHistory() {
@@ -101,8 +103,32 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		// transfer service
 		// required
+		// allows authentication token to be used in method calls
+		AccountService accountService = new AccountService(currentUser.getToken());
+
+		// list users -- userID + username
+		console.printUsers(accountService.getListOfAccounts());
+
+		// select a user to send money to
+		long userID = console.getUserInputInteger("Enter the user ID you are sending to");
+
+		// enter amount
+		long amount = console.getUserInputInteger("Enter the amount of money to send");
+
+		// send transfer
+		Transfer transfer = new Transfer();
+
+		// these first 2 won't work, as toAccountID and fromAccountID inside of Transfer class
+		// correspond to the accountID, not the userID, but userID is being supplied
+		transfer.setToAccountID(userID);
+		transfer.setFromAccountID(currentUser.getUser().getId());
+
+		transfer.setTransferType(2);
+		transfer.setTransferStatus(2);
+		transfer.setAmount(amount);
+
+		accountService.sendTransfer(transfer);
 
 	}
 
