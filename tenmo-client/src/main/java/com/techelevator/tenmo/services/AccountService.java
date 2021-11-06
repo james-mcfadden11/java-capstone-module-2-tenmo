@@ -2,6 +2,8 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
+import org.apiguardian.api.API;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
@@ -63,16 +65,43 @@ public class AccountService {
         return transferHistory;
     }
 
-    private HttpEntity<Account> makeAccountEntity(Account account) {
+    public Account[] getListOfAccounts() {
+        Account[] listOfAccounts = null;
+        try {
+            ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL + "/accounts",
+                    HttpMethod.GET, makeAuthEntity(), Account[].class);
+            listOfAccounts = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.print(e.getMessage());
+        }
+        return listOfAccounts;
+    }
+
+    public Transfer sendTransfer(Transfer transfer) {
+        Transfer createdTransfer = null;
+        try {
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "/transfers",
+                    HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+            createdTransfer = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.print(e.getMessage());
+        }
+        return createdTransfer;
+    }
+
+    // to be used for POST request
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
-        return new HttpEntity<>(account, headers);
+        return new HttpEntity<>(transfer, headers);
     }
 
+    // to be used for GET request
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);
     }
+
 }

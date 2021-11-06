@@ -65,4 +65,9 @@ public class Account {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return this.userID + "                " + this.username;
+    }
+
 }
