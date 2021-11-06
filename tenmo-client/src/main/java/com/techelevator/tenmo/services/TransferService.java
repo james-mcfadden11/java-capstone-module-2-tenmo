@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Transfer;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 public class TransferService {
@@ -13,7 +15,12 @@ public class TransferService {
         this.restTemplate = restTemplate;
     }
 
-//    public send sendBucks(){
-//        return restTemplate.getForObject(API_BASE_URL + "/0808" + API_KEY, .class);
-  //  }
+    public double sendBucks(long amount){
+        Transfer transfer = null;
+        ResponseEntity<Transfer> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID)
+
+
+
+
+    }
 }

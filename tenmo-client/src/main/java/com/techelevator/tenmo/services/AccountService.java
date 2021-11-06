@@ -37,22 +37,17 @@ public class AccountService {
         return -1.0;
     }
 
-//    public History viewTransferHistory(){
-//       // return restTemplate.getForObject(API_BASE_URL + "/0808" + API_KEY, History.class);
-
- //   }
-
     public Transfer[] viewTransferHistory(long userID) {
         Transfer[] transferHistory = null;
         long accountID = -1;
 
-        // need to change userID --> accountID
+        // need to change userID --> accountID --- CHANGED
         // this is probably a hack way of doing this...
         Account account = null;
         try {
-            ResponseEntity<Account> accountResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + userID, HttpMethod.GET,
+            ResponseEntity<Account> accountResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID, HttpMethod.GET,
                     makeAuthEntity(), Account.class);
-            accountID = accountResponse.getBody().getUserID();
+            accountID = accountResponse.getBody().getAccountID();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.print(e.getMessage());
         }
