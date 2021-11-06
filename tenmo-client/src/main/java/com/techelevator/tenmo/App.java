@@ -121,6 +121,7 @@ public class App {
 
 		// these first 2 won't work, as toAccountID and fromAccountID inside of Transfer class
 		// correspond to the accountID, not the userID, but userID is being supplied
+		// these need to be userID's, not accountID's
 		transfer.setToAccountID(userID);
 		transfer.setFromAccountID(currentUser.getUser().getId());
 

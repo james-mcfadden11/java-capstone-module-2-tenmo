@@ -86,7 +86,7 @@ public class AccountService {
         Transfer createdTransfer = null;
         try {
             ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "/transfers",
-                    HttpMethod.POST, makeAuthEntity(), Transfer.class);
+                    HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
             createdTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.print(e.getMessage());
@@ -94,13 +94,15 @@ public class AccountService {
         return createdTransfer;
     }
 
-//    private HttpEntity<Account> makeAccountEntity(Account account) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBearerAuth(authToken);
-//        return new HttpEntity<>(account, headers);
-//    }
+    // to be used for POST request
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(transfer, headers);
+    }
 
+    // to be used for GET request
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authToken);
