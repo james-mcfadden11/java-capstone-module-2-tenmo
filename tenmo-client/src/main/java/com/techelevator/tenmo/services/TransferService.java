@@ -1,7 +1,10 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 public class TransferService {
@@ -16,11 +19,34 @@ public class TransferService {
     }
 
     public double sendBucks(long amount){
+        Account account = null
         Transfer transfer = null;
-        ResponseEntity<Transfer> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID)
+        try {
+            ResponseEntity<Transfer> TransferResponse = restTemplate.exchange(API_BASE_URL +
+                    "accounts/" + AccountID + "transfer/" + amount, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+            account = response.getBody();
+        } catch (RestClientException | ResourceAccessException e) {
+            system.out.print(e.getMessage());
+        }
+        return account;
 
 
 
 
+
+    }
+
+//    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setBearerAuth(authToken);
+//        return new HttpEntity<>(transfer, headers);
+//    }
+//
+//
+//    private HttpEntity<Void> makeAuthEntity() {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setBearerAuth(authToken);
+//        return new HttpEntity<>(headers);
     }
 }

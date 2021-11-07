@@ -21,11 +21,11 @@ public class AccountService {
         this.authToken = authToken;
     }
 
-    public double viewCurrentBalance(long userID){
+    public double viewCurrentBalance(long AccountID){
         //CRUD methods
         Account account = null;
         try {
-            ResponseEntity<Account> response = restTemplate.exchange(API_BASE_URL + "accounts/" + userID + "/balance",
+            ResponseEntity<Account> response = restTemplate.exchange(API_BASE_URL + "accounts/" + AccountID + "/balance",
                     HttpMethod.GET, makeAuthEntity(), Account.class);
             account = response.getBody();
             if (account == null) {
@@ -39,7 +39,7 @@ public class AccountService {
         return -1.0;
     }
 
-    public Transfer[] viewTransferHistory(long userID) {
+    public Transfer[] viewTransferHistory(long AccountID) {
         Transfer[] transferHistory = null;
         long accountID = -1;
 
@@ -47,15 +47,15 @@ public class AccountService {
         // this is probably a hack way of doing this...
         Account account = null;
         try {
-            ResponseEntity<Account> accountResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID, HttpMethod.GET,
+            ResponseEntity<Account> accountResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + AccountID, HttpMethod.GET,
                     makeAuthEntity(), Account.class);
-            accountID = accountResponse.getBody().getAccountID();
+            AccountID = accountResponse.getBody().getAccountID();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.print(e.getMessage());
         }
 
         try {
-            ResponseEntity<Transfer[]> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID + "/transfers",
+            ResponseEntity<Transfer[]> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + AccountID + "/transfers",
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transferHistory = transferResponse.getBody();
             return transferHistory;
