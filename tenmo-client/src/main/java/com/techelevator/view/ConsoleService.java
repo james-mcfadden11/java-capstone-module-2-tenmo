@@ -78,13 +78,23 @@ public class ConsoleService {
 	}
 
 	public void printTransfers(Transfer[] transfers) {
+		System.out.println("---------------------------------------");
+		System.out.println("Transfer ID:   From:    To:    Amount:");
+		System.out.println("---------------------------------------");
 		for (Transfer transfer : transfers) {
 			System.out.println(transfer.toString());
+			System.out.println("---------------------------------------");
 		}
 	}
 
+	public void printOneTransfer(Transfer transfer, String fromOrTo) {
+		System.out.println("------------------------------");
+		System.out.println(transfer.detailedToString(fromOrTo));
+		System.out.println("------------------------------");
+	}
+
 	public void printUsers(Account[] accounts) {
-		System.out.println("User ID:             Username: ");
+		System.out.println("User ID:          Username: ");
 		System.out.println("------------------------------");
 		for (Account account : accounts) {
 			System.out.println(account.toString());

@@ -93,6 +93,20 @@ public class App {
 		AccountService accountService = new AccountService(currentUser.getToken());
 		System.out.println(currentUser.getUser().getUsername() + " has a transfer history of:");
 		console.printTransfers(accountService.viewTransferHistory(currentUser.getUser().getId()));
+
+		long transferID = console.getUserInputInteger("Please enter transfer ID to view details (0 to cancel)");
+		Transfer transfer = accountService.viewTransferDetails(transferID);
+
+		if (currentUser.getUser().getUsername().equals(transfer.getFromUsername())) {
+			console.printOneTransfer(transfer, "from");
+		} else if (currentUser.getUser().getUsername().equals(transfer.getToUsername())) {
+			console.printOneTransfer(transfer, "to");
+		} else {
+			System.out.println("Something went wrong: transfer not found.");
+		}
+
+
+
 	}
 
 	private void viewPendingRequests() {

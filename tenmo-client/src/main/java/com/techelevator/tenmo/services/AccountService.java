@@ -22,7 +22,6 @@ public class AccountService {
     }
 
     public double viewCurrentBalance(long userID){
-        //CRUD methods
         Account account = null;
         try {
             ResponseEntity<Account> response = restTemplate.exchange(API_BASE_URL + "accounts/" + userID + "/balance",
@@ -46,28 +45,34 @@ public class AccountService {
 
     public Transfer[] viewTransferHistory(long userID) {
         Transfer[] transferHistory = null;
-        long accountID = -1;
-
-        // need to change userID --> accountID
-        // this is probably a hack way of doing this...
-        Account account = null;
         try {
-            ResponseEntity<Account> accountResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + userID, HttpMethod.GET,
-                    makeAuthEntity(), Account.class);
-            accountID = accountResponse.getBody().getUserID();
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            System.out.print(e.getMessage());
-        }
-
-        try {
-            ResponseEntity<Transfer[]> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + accountID + "/transfers",
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "accounts/" + userID + "/transfers",
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
-            transferHistory = transferResponse.getBody();
-            return transferHistory;
+            transferHistory = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.print(e.getMessage());
         }
         return transferHistory;
+    }
+
+    // to be moved over to TransferService later
+    public Transfer viewTransferDetails(long transferID) {
+
+        if (transferID == 0) {
+            return null;
+        }
+
+        Transfer transfer = null;
+
+        try {
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfers/" + transferID,
+                    HttpMethod.GET, makeAuthEntity(), Transfer.class);
+            transfer = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.print(e.getMessage());
+        }
+
+        return transfer;
     }
 
     public Account[] getListOfAccounts() {

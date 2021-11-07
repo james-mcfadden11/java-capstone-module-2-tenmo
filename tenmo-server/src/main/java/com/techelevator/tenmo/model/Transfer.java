@@ -11,7 +11,11 @@ public class Transfer {
     // eventually need to add validations using @Valid
 
     private long fromAccountID;
+    private String fromUsername;
+
     private long toAccountID;
+    private String toUsername;
+
     private long transferID;
     private double amount;
 
@@ -85,4 +89,19 @@ public class Transfer {
         this.transferStatus = transferStatus;
     }
 
+    public String getFromUsername() {
+        return fromUsername;
+    }
+
+    public void setFromUsername(String fromUsername) {
+        this.fromUsername = fromUsername;
+    }
+
+    public String getToUsername() {
+        return toUsername;
+    }
+
+    public void setToUsername(String toUsername) {
+        this.toUsername = toUsername;
+    }
 }

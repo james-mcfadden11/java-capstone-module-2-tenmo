@@ -61,34 +61,62 @@ public class JdbcAccountDao implements AccountDao {
         return jdbcTemplate.queryForObject(sql, Double.class, userID);
     }
 
-    // gets all transfers to or from an account
+    // get all transfers to or from an account
     @Override
     public List<Transfer> getListOfTransfers(long userID) {
         List<Transfer> listOfTransfers = new ArrayList<>();
+        Account account = null;
 
-        // transfers from the user
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_from" +
-                " WHERE user_id = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userID);
-
-        while (results.next()) {
-            Transfer transfer = mapRowToTransfer(results);
-            listOfTransfers.add(transfer);
+        // get account info for user
+        String sql = "SELECT account_id, balance, username, user_id " +
+                "FROM accounts JOIN users USING(user_id) WHERE user_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userID);
+        if (result.next()) {
+            account = mapRowToAccount(result);
         }
 
-        // transfers to the user
-        sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_to" +
-                " WHERE user_id = ?";
-        results = jdbcTemplate.queryForRowSet(sql, userID);
+        // get transfers to or from the logged in user
+        sql = "SELECT transfer_id, amount, account_from, account_to, transfer_status_id, transfer_type_id" +
+                " FROM transfers";
+        SqlRowSet transfers = jdbcTemplate.queryForRowSet(sql);
+        while (transfers.next()) {
+            Transfer transfer = mapRowToTransfer(transfers);
 
-        while (results.next()) {
-            Transfer transfer = mapRowToTransfer(results);
-            listOfTransfers.add(transfer);
+            if (transfer.getFromAccountID() == account.getAccountID()) {
+                listOfTransfers.add(transfer);
+            }
+            // in the odd case that a user would transfer to themself, need to have 2 if statements
+            // to show transfer out and transfer in
+            if (transfer.getToAccountID() == account.getAccountID()) {
+                listOfTransfers.add(transfer);
+            }
         }
 
         return listOfTransfers;
+
+
+//        // transfers from the user
+//        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+//                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_from" +
+//                " WHERE user_id = ?";
+//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userID);
+//
+//        while (results.next()) {
+//            Transfer transfer = mapRowToTransfer(results);
+//            listOfRelevantTransfers.add(transfer);
+//        }
+//
+//        // transfers to the user
+//        sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+//                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_to" +
+//                " WHERE user_id = ?";
+//        results = jdbcTemplate.queryForRowSet(sql, userID);
+//
+//        while (results.next()) {
+//            Transfer transfer = mapRowToTransfer(results);
+//            listOfRelevantTransfers.add(transfer);
+//        }
+
     }
 
     public long getAccountIDFromUserID(long userID) {
@@ -109,17 +137,30 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
+
     private Transfer mapRowToTransfer(SqlRowSet rowSet) {
         Transfer transfer = new Transfer();
 
         transfer.setFromAccountID(rowSet.getLong("account_from"));
+        transfer.setFromUsername(getUsernameFromAccountID(transfer.getFromAccountID()));
+
         transfer.setToAccountID(rowSet.getLong("account_to"));
+        transfer.setToUsername(getUsernameFromAccountID(transfer.getToAccountID()));
+
         transfer.setAmount(rowSet.getDouble("amount"));
         transfer.setTransferID(rowSet.getLong("transfer_id"));
         transfer.setTransferStatus(rowSet.getInt("transfer_status_id"));
         transfer.setTransferType(rowSet.getInt("transfer_type_id"));
 
         return transfer;
+    }
+
+    // created a helper method for this function - probably possible to use only sql to do this job,
+    // but this was easier to read
+    private String getUsernameFromAccountID(long accountID) {
+        String sql = "select username from users join accounts using(user_id) where account_id = ?";
+        String username = jdbcTemplate.queryForObject(sql, String.class, accountID);
+        return username;
     }
 
 }

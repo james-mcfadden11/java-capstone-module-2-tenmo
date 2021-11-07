@@ -103,12 +103,24 @@ public class JdbcTransferDao implements TransferDao {
         Transfer transfer = new Transfer();
 
         transfer.setFromAccountID(rowSet.getLong("account_from"));
+        transfer.setFromUsername(getUsernameFromAccountID(transfer.getFromAccountID()));
+
         transfer.setToAccountID(rowSet.getLong("account_to"));
+        transfer.setToUsername(getUsernameFromAccountID(transfer.getToAccountID()));
+
         transfer.setAmount(rowSet.getDouble("amount"));
         transfer.setTransferID(rowSet.getLong("transfer_id"));
         transfer.setTransferStatus(rowSet.getInt("transfer_status_id"));
         transfer.setTransferType(rowSet.getInt("transfer_type_id"));
 
         return transfer;
+    }
+
+    // created a helper method for this function - probably possible to use only sql to do this job,
+    // but this was easier to read
+    private String getUsernameFromAccountID(long accountID) {
+        String sql = "select username from users join accounts using(user_id) where account_id = ?";
+        String username = jdbcTemplate.queryForObject(sql, String.class, accountID);
+        return username;
     }
 }
