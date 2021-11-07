@@ -1,7 +1,5 @@
 package com.techelevator.tenmo.model;
 
-import java.math.BigDecimal;
-
 public class Transfer {
 
     // eventually need to add validations using @Valid
@@ -11,6 +9,9 @@ public class Transfer {
 
     private long toAccountID;
     private String toUsername;
+
+    private long toUserID;
+    private long fromUserID;
 
     private long transferID;
     private double amount;
@@ -34,8 +35,6 @@ public class Transfer {
         this.amount = amount;
     }
 
-
-    // getters and setters
 
     public long getFromAccountID() {
         return fromAccountID;
@@ -99,6 +98,22 @@ public class Transfer {
 
     public void setToUsername(String toUsername) {
         this.toUsername = toUsername;
+    }
+
+    public long getToUserID() {
+        return toUserID;
+    }
+
+    public void setToUserID(long toUserID) {
+        this.toUserID = toUserID;
+    }
+
+    public long getFromUserID() {
+        return fromUserID;
+    }
+
+    public void setFromUserID(long fromUserID) {
+        this.fromUserID = fromUserID;
     }
 
     @Override

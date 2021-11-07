@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.math.BigDecimal;
 
 public class Transfer {
 
@@ -15,6 +14,9 @@ public class Transfer {
 
     private long toAccountID;
     private String toUsername;
+
+    private long toUserID;
+    private long fromUserID;
 
     private long transferID;
     private double amount;
@@ -28,18 +30,6 @@ public class Transfer {
     // for now, including 2 constructors - not sure what we will need
     public Transfer() {
     }
-
-    public Transfer(long fromAccountID, long toAccountID, long transferID, int transferType, int transferStatus, double amount) {
-        this.fromAccountID = fromAccountID;
-        this.toAccountID = toAccountID;
-        this.transferID = transferID;
-        this.transferType = transferType;
-        this.transferStatus = transferStatus;
-        this.amount = amount;
-    }
-
-
-    // getters and setters
 
     public long getFromAccountID() {
         return fromAccountID;
@@ -103,5 +93,21 @@ public class Transfer {
 
     public void setToUsername(String toUsername) {
         this.toUsername = toUsername;
+    }
+
+    public long getToUserID() {
+        return toUserID;
+    }
+
+    public void setToUserID(long toUserID) {
+        this.toUserID = toUserID;
+    }
+
+    public long getFromUserID() {
+        return fromUserID;
+    }
+
+    public void setFromUserID(long fromUserID) {
+        this.fromUserID = fromUserID;
     }
 }

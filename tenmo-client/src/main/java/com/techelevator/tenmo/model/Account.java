@@ -9,9 +9,6 @@ public class Account {
     private double balance;
     private long accountID;
     private String username;
-
-    // foreign key to userID - one user can have more than one account
-    // User class and corresponding DAO primarily deal with username/password/authentication
     private long userID;
 
     // for now, including 2 constructors - not sure what we will need
@@ -29,9 +26,6 @@ public class Account {
     public Account(double balance) {
         this.balance = balance;
     }
-
-
-    // getters and setters for all fields
 
     public long getAccountID() {
         return accountID;

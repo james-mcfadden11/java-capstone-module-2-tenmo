@@ -1,10 +1,12 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.Exception.AccountNotFoundException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -41,7 +43,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public Account getOneAccount(long userID) {
+    public Account getOneAccount(long userID)  throws AccountNotFoundException{
         Account account = null;
         String sql = "SELECT account_id, username, balance, user_id " +
                 "FROM users JOIN accounts USING(user_id) WHERE user_id = ?";
@@ -49,6 +51,8 @@ public class JdbcAccountDao implements AccountDao {
 
         if (result.next()) {
             account = mapRowToAccount(result);
+        } else {
+            throw new AccountNotFoundException();
         }
 
         return account;
@@ -63,7 +67,7 @@ public class JdbcAccountDao implements AccountDao {
 
     // get all transfers to or from an account
     @Override
-    public List<Transfer> getListOfTransfers(long userID) {
+    public List<Transfer> getListOfTransfers(long userID) throws AccountNotFoundException {
         List<Transfer> listOfTransfers = new ArrayList<>();
         Account account = null;
 
@@ -73,6 +77,8 @@ public class JdbcAccountDao implements AccountDao {
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userID);
         if (result.next()) {
             account = mapRowToAccount(result);
+        } else {
+            throw new AccountNotFoundException();
         }
 
         // get transfers to or from the logged in user
@@ -91,31 +97,8 @@ public class JdbcAccountDao implements AccountDao {
                 listOfTransfers.add(transfer);
             }
         }
-
         return listOfTransfers;
 
-
-//        // transfers from the user
-//        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-//                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_from" +
-//                " WHERE user_id = ?";
-//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userID);
-//
-//        while (results.next()) {
-//            Transfer transfer = mapRowToTransfer(results);
-//            listOfRelevantTransfers.add(transfer);
-//        }
-//
-//        // transfers to the user
-//        sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-//                "FROM users JOIN accounts USING(user_id) JOIN transfers ON account_id = account_to" +
-//                " WHERE user_id = ?";
-//        results = jdbcTemplate.queryForRowSet(sql, userID);
-//
-//        while (results.next()) {
-//            Transfer transfer = mapRowToTransfer(results);
-//            listOfRelevantTransfers.add(transfer);
-//        }
 
     }
 
