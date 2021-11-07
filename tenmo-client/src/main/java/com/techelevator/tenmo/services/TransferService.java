@@ -36,17 +36,16 @@ public class TransferService {
 
     }
 
-//    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBearerAuth(authToken);
-//        return new HttpEntity<>(transfer, headers);
-//    }
-//
-//
-//    private HttpEntity<Void> makeAuthEntity() {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setBearerAuth(authToken);
-//        return new HttpEntity<>(headers);
+    private HttpEntity<Transfer> transferHttpEntity (Transfer transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(transfer, headers);
+    }
+
+    private HttpEntity<Void> makeAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(headers);
     }
 }
