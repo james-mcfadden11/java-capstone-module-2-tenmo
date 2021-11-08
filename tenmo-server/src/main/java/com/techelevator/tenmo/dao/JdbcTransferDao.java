@@ -57,6 +57,10 @@ public class JdbcTransferDao implements TransferDao {
             receiver = mapRowToAccount(receiverRowSet);
         }
 
+        if (sender.getAccountID() == receiver.getAccountID()) {
+            return null;
+        }
+
         // check if sender has enough $ in account to transfer
         if (sender.getBalance() < transfer.getAmount()) {
             System.out.println("Insufficient funds!");
