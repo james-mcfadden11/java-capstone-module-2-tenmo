@@ -1,10 +1,5 @@
 package com.techelevator.tenmo.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-
 public class Transfer {
 
     // eventually need to add validations using @Valid
@@ -30,6 +25,16 @@ public class Transfer {
     // for now, including 2 constructors - not sure what we will need
     public Transfer() {
     }
+
+    public Transfer(long fromAccountID, long toAccountID, long transferID, int transferType, int transferStatus, double amount) {
+        this.fromAccountID = fromAccountID;
+        this.toAccountID = toAccountID;
+        this.transferID = transferID;
+        this.transferType = transferType;
+        this.transferStatus = transferStatus;
+        this.amount = amount;
+    }
+
 
     public long getFromAccountID() {
         return fromAccountID;
@@ -110,4 +115,54 @@ public class Transfer {
     public void setFromUserID(long fromUserID) {
         this.fromUserID = fromUserID;
     }
+
+    @Override
+    public String toString() {
+        return "   " + this.transferID + "        " + this.fromUsername + "    " + this.toUsername + "    " + this.amount;
+    }
+
+    public String detailedToString(String fromOrTo) {
+        // transferType: 1 = request, 2 = send
+        // transferStatus: 1 = pending, 2 = approved, 3 = rejected
+        String transferType;
+        String transferStatus;
+
+        if (this.transferType == 1) {
+            transferType = "Request";
+        } else if (this.transferType == 2) {
+            transferType = "Send";
+        } else {
+            transferType = "?";
+        }
+
+        if (this.transferStatus == 1) {
+            transferStatus = "Pending";
+        } else if (this.transferStatus == 2) {
+            transferStatus = "Approved";
+        } else if (this.transferStatus == 3){
+            transferStatus = "Rejected";
+        } else {
+            transferStatus = "?";
+        }
+
+        if (fromOrTo.equals("from")) {
+            return "ID: " + this.transferID + "\n" +
+                    "From: " + this.fromUsername + " (me) \n" +
+                    "To: " + this.toUsername + "\n" +
+                    "Type: " + transferType + "\n" +
+                    "Status: " + transferStatus + "\n" +
+                    "Amount: " + this.amount;
+        } else if (fromOrTo.equals("to")) {
+            return "ID: " + this.transferID + "\n" +
+                    "From: " + this.fromUsername + "\n" +
+                    "To: " + this.toUsername + " (me) \n" +
+                    "Type: " + transferType + "\n" +
+                    "Status: " + transferStatus + "\n" +
+                    "Amount: " + this.amount;
+        } else {
+            return "Something went wrong...";
+        }
+    }
+
 }
+

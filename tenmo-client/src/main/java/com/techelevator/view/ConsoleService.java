@@ -1,5 +1,7 @@
 package com.techelevator.view;
 
+import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,4 +75,29 @@ public class ConsoleService {
 		} while(result == null);
 		return result;
 	}
+
+	public void printTransfers(Transfer[] transfers) {
+		System.out.println("---------------------------------------");
+		System.out.println("Transfer ID:   From:    To:    Amount:");
+		System.out.println("---------------------------------------");
+		for (Transfer transfer : transfers) {
+			System.out.println(transfer.toString());
+			System.out.println("---------------------------------------");
+		}
+	}
+
+	public void printOneTransfer(Transfer transfer, String fromOrTo) {
+		System.out.println("------------------------------");
+		System.out.println(transfer.detailedToString(fromOrTo));
+		System.out.println("------------------------------");
+	}
+
+	public void printUsers(Account[] accounts) {
+		System.out.println("User ID:          Username: ");
+		System.out.println("------------------------------");
+		for (Account account : accounts) {
+			System.out.println(account.toString());
+		}
+	}
+
 }
