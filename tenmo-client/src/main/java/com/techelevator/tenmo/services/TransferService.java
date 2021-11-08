@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 public class TransferService {
@@ -19,7 +20,7 @@ public class TransferService {
     }
 
     public double sendBucks(long amount){
-        Account account = null
+        Account account = null;
         Transfer transfer = null;
         try {
             ResponseEntity<Transfer> TransferResponse = restTemplate.exchange(API_BASE_URL +
@@ -28,7 +29,16 @@ public class TransferService {
         } catch (RestClientException | ResourceAccessException e) {
             system.out.print(e.getMessage());
         }
-        return account;
+        return transfer;
+//        Transfer createdTransfer = null;
+//        try {
+//            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "/transfers",
+//                    HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+//            createdTransfer = response.getBody();
+//        } catch (RestClientResponseException | ResourceAccessException e) {
+//            System.out.print(e.getMessage());
+//        }
+//        return createdTransfer;
 
 
 
