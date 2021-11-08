@@ -6,6 +6,7 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TransferService;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -73,11 +74,6 @@ public class App {
 	// and print relevant results to console using ConsoleService
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-    	// call the method from account service. so build in account service
-		// required
-
-		// allows authentication token to be used in method calls
 		AccountService accountService = new AccountService(currentUser.getToken());
 		System.out.println("You (" + currentUser.getUser().getUsername() +
 				") have a balance of " +
@@ -86,51 +82,56 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		// transfer service
-		// required
-		// allows authentication token to be used in method calls
 		AccountService accountService = new AccountService(currentUser.getToken());
+		TransferService transferService = new TransferService((currentUser.getToken()));
+
 		System.out.println(currentUser.getUser().getUsername() + " has a transfer history of:");
 		console.printTransfers(accountService.viewTransferHistory(currentUser.getUser().getId()));
+
+		long transferID = console.getUserInputInteger("Please enter transfer ID to view details (0 to cancel)");
+		if (transferID == 0) {
+			return;
+		}
+		Transfer transfer = transferService.viewTransferDetails(transferID);
+
+		if (currentUser.getUser().getUsername().equals(transfer.getFromUsername())) {
+			console.printOneTransfer(transfer, "from");
+		} else if (currentUser.getUser().getUsername().equals(transfer.getToUsername())) {
+			console.printOneTransfer(transfer, "to");
+		} else {
+			System.out.println("Something went wrong: transfer not found.");
+		}
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		// transfer service
 		// optional
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		// required
-		// allows authentication token to be used in method calls
 		AccountService accountService = new AccountService(currentUser.getToken());
+		TransferService transferService = new TransferService(currentUser.getToken());
 
 		// list users -- userID + username
 		console.printUsers(accountService.getListOfAccounts());
 
 		// select a user to send money to
-		long userID = console.getUserInputInteger("Enter the user ID you are sending to");
+		long toUserID = console.getUserInputInteger("Enter the user ID you are sending to");
 
 		// enter amount
 		long amount = console.getUserInputInteger("Enter the amount of money to send");
 
-		// send transfer
+		// setup transfer and send
 		Transfer transfer = new Transfer();
 
-		// these first 2 won't work, as toAccountID and fromAccountID inside of Transfer class
-		// correspond to the accountID, not the userID, but userID is being supplied
-		// these need to be userID's, not accountID's
-		transfer.setToAccountID(userID);
-		transfer.setFromAccountID(currentUser.getUser().getId());
+		transfer.setToUserID(toUserID);
+		transfer.setFromUserID(currentUser.getUser().getId());
 
 		transfer.setTransferType(2);
 		transfer.setTransferStatus(2);
 		transfer.setAmount(amount);
 
-		accountService.sendTransfer(transfer);
-
+		transferService.sendTransfer(transfer);
 	}
 
 	private void requestBucks() {

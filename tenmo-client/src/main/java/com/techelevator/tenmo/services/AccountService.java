@@ -2,15 +2,10 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
-import org.apiguardian.api.API;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountService {
     private final String API_BASE_URL = "http://localhost:8080/";
@@ -21,8 +16,24 @@ public class AccountService {
         this.authToken = authToken;
     }
 
+<<<<<<< HEAD
     public double viewCurrentBalance(long AccountID){
         //CRUD methods
+=======
+    public Account[] getListOfAccounts() {
+        Account[] listOfAccounts = null;
+        try {
+            ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL + "/accounts",
+                    HttpMethod.GET, makeAuthEntity(), Account[].class);
+            listOfAccounts = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.print(e.getMessage());
+        }
+        return listOfAccounts;
+    }
+
+    public double viewCurrentBalance(long userID){
+>>>>>>> ce361d83106cc7bdab075750fa9bbd372ab5729c
         Account account = null;
         try {
             ResponseEntity<Account> response = restTemplate.exchange(API_BASE_URL + "accounts/" + AccountID + "/balance",
@@ -39,6 +50,7 @@ public class AccountService {
         return -1.0;
     }
 
+<<<<<<< HEAD
     public Transfer[] viewTransferHistory(long AccountID) {
         Transfer[] transferHistory = null;
         long accountID = -1;
@@ -56,45 +68,18 @@ public class AccountService {
 
         try {
             ResponseEntity<Transfer[]> transferResponse = restTemplate.exchange(API_BASE_URL + "accounts/" + AccountID + "/transfers",
+=======
+    public Transfer[] viewTransferHistory(long userID) {
+        Transfer[] transferHistory = null;
+        try {
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "accounts/" + userID + "/transfers",
+>>>>>>> ce361d83106cc7bdab075750fa9bbd372ab5729c
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
-            transferHistory = transferResponse.getBody();
-            return transferHistory;
+            transferHistory = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             System.out.print(e.getMessage());
         }
         return transferHistory;
-    }
-
-    public Account[] getListOfAccounts() {
-        Account[] listOfAccounts = null;
-        try {
-            ResponseEntity<Account[]> response = restTemplate.exchange(API_BASE_URL + "/accounts",
-                    HttpMethod.GET, makeAuthEntity(), Account[].class);
-            listOfAccounts = response.getBody();
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            System.out.print(e.getMessage());
-        }
-        return listOfAccounts;
-    }
-
-    public Transfer sendTransfer(Transfer transfer) {
-        Transfer createdTransfer = null;
-        try {
-            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "/transfers",
-                    HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
-            createdTransfer = response.getBody();
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            System.out.print(e.getMessage());
-        }
-        return createdTransfer;
-    }
-
-    // to be used for POST request
-    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(authToken);
-        return new HttpEntity<>(transfer, headers);
     }
 
     // to be used for GET request
